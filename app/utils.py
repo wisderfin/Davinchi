@@ -91,3 +91,44 @@ async def edit_description(id: int, new_description: str):
             user.description = new_description
             await session.commit()
 
+
+async def user_banned(id: int):
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel).filter_by(id=id))
+        user = result.scalar_one_or_none()
+        if user is not None:
+            user.banned = True
+            await session.commit()
+
+
+async def user_unbanned(id: int):
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel).filter_by(id=id))
+        user = result.scalar_one_or_none()
+        if user is not None:
+            user.banned = False
+            await session.commit()
+
+
+async def set_admin(id: int):
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel).filter_by(id=id))
+        user = result.scalar_one_or_none()
+        if user is not None:
+            user.admin = True
+            await session.commit()
+
+
+async def unset_admin(id: int):
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel).filter_by(id=id))
+        user = result.scalar_one_or_none()
+        if user is not None:
+            user.admin = False
+            await session.commit()
+
+async def check_banned(id: int):
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel).filter_by(id=id))
+        user = result.scalar_one_or_none()
+        return user.banned

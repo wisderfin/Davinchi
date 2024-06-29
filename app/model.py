@@ -16,4 +16,5 @@ class UserModel(Base):
     rate = Column(Float, nullable=False, default=5.0)
     account = Column(String, unique=True, nullable=False)
     admin = Column(Boolean, nullable=False, default=False)
+    banned = Column(Boolean, nullable=False, default=False)
     create_at = Column(DateTime, nullable=False, default=func.now())

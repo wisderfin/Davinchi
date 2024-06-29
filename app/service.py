@@ -1,5 +1,4 @@
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
 
 
 async def get_city_name(latitude, longitude):
