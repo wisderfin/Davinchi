@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: str
 
+    # redis
+    REDIS_PASSWORD: str
     # telegram
     TG_TOKEN: str
 

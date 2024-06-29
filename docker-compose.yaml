@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 
 services:
@@ -21,6 +21,23 @@ services:
     depends_on:
       - postgres
     restart: on-failure
+
+  redis:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+      - REDIS_HOST=0.0.0.0
+    ports:
+      - "6379:6379"
+    volumes:
+      - .:/app
+    command: redis-server --maxmemory 1gb --maxmemory-policy allkeys-lru
+    depends_on:
+      - postgres
+      - alembic
+    restart: always
 
   bot:
     build:
