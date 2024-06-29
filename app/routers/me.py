@@ -4,7 +4,6 @@ import telebot
 from app.keyboard import status_keyboard, menu_keyboard, edit_profile_keyboard
 from app import redis_utils
 from app.utils import get_user
-from app.utils import check_banned
 
 
 def me_handlers(bot: AsyncTeleBot):
@@ -32,7 +31,6 @@ def me_handlers(bot: AsyncTeleBot):
 
     @bot.message_handler(func=lambda mes: mes.text == '🎮 Тиммейт')
     async def set_status_teammeate(mes):
-        redis_utils.set('key', 'value')
         await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск тимейтов",
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='teammate')

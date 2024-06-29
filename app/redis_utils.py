@@ -6,7 +6,7 @@ import redis
 # Класс контекстного менеджера для открытия и закрытия redis сессии
 class SessionManager:
     def __init__(self):
-        self.session = redis.Redis(host='redis', port=6379, decode_responses=True)
+        self.session = redis.Redis(host='redis', port=6378, decode_responses=True)
 
     def __enter__(self):
         return self.session

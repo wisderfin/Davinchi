@@ -26,11 +26,11 @@ services:
     image: redis:latest
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_PORT=6379
+      - REDIS_PORT=6378
       - REDIS_DATABASES=16
       - REDIS_HOST=0.0.0.0
     ports:
-      - "6379:6379"
+      - "6378:6378"
     volumes:
       - .:/app
     command: redis-server --maxmemory 1gb --maxmemory-policy allkeys-lru
