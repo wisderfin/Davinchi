@@ -10,25 +10,20 @@ from app.utils import check_banned
 def me_handlers(bot: AsyncTeleBot):
     @bot.message_handler(func=lambda mes: mes.text == "👤 Мой профиль")
     async def callback_query(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            user = await get_user(mes.from_user.id)
-            try:
-                status = redis_utils.get(f'{user.id}')
-                status = status if status is not None else 'mute'
-            except Exception as _ex:
-                status = 'mute'
-            await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
-                                                                f'Имя: {user.name}\n'
-                                                                f'Возраст: {user.age}\n'
-                                                                f'Пол: {'М' if user.gender else 'Ж'}\n'
-                                                                f'Локация: {user.location}\n'
-                                                                f'О себе: {user.description}',
-                                 reply_markup=edit_profile_keyboard())
-            redis_utils.set(key=f'{user.id}', value=status)
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+        user = await get_user(mes.from_user.id)
+        try:
+            status = redis_utils.get(f'{user.id}')
+            status = status if status is not None else 'mute'
+        except Exception as _ex:
+            status = 'mute'
+        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
+                                                            f'Имя: {user.name}\n'
+                                                            f'Возраст: {user.age}\n'
+                                                            f'Пол: {'М' if user.gender else 'Ж'}\n'
+                                                            f'Локация: {user.location}\n'
+                                                            f'О себе: {user.description}',
+                             reply_markup=edit_profile_keyboard())
+        redis_utils.set(key=f'{user.id}', value=status)
 
     @bot.message_handler(func=lambda mes: mes.text == '📝 Установить статус')
     async def set_status(mes):
