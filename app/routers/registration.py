@@ -20,6 +20,7 @@ class RegisterState(StatesGroup):
 def register_handlers(bot: AsyncTeleBot):
     @bot.message_handler(commands=['start'])
     async def send_welcome(message):
+
         await bot.send_message(message.from_user.id, 'Привет, как тебя зовут?')
         await bot.set_state(message.from_user.id, RegisterState.name, message.chat.id)
 
