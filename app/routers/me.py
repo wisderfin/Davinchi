@@ -27,60 +27,36 @@ def me_handlers(bot: AsyncTeleBot):
 
     @bot.message_handler(func=lambda mes: mes.text == '📝 Установить статус')
     async def set_status(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            await bot.send_message(mes.from_user.id, 'Выберите статус', reply_markup=status_keyboard())
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+
+        await bot.send_message(mes.from_user.id, 'Выберите статус', reply_markup=status_keyboard())
 
     @bot.message_handler(func=lambda mes: mes.text == '🎮 Тиммейт')
     async def set_status_teammeate(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            redis_utils.set('key', 'value')
-            await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск тимейтов",
-                                   reply_markup=menu_keyboard())
-            redis_utils.set(key=f'{mes.from_user.id}', value='teammate')
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+        redis_utils.set('key', 'value')
+        await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск тимейтов",
+                               reply_markup=menu_keyboard())
+        redis_utils.set(key=f'{mes.from_user.id}', value='teammate')
 
     @bot.message_handler(func=lambda mes: mes.text == '🗨 Собеседник')
     async def set_status_talcking(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск общения",
-                                   reply_markup=menu_keyboard())
-            redis_utils.set(key=f'{mes.from_user.id}', value='talcking')
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+        await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск общения",
+                               reply_markup=menu_keyboard())
+        redis_utils.set(key=f'{mes.from_user.id}', value='talcking')
 
     @bot.message_handler(func=lambda mes: mes.text == "🚫 Не беспокоить")
     async def set_status_mute(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            await bot.send_message(mes.from_user.id, f"Ваш статус: Не беспокоить",
-                                   reply_markup=menu_keyboard())
-            redis_utils.set(key=f'{mes.from_user.id}', value='mute')
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+        await bot.send_message(mes.from_user.id, f"Ваш статус: Не беспокоить",
+                               reply_markup=menu_keyboard())
+        redis_utils.set(key=f'{mes.from_user.id}', value='mute')
 
     @bot.message_handler(func=lambda mes: mes.text == '🔙 Назад')
     async def callback_query(mes):
-        banned = await check_banned(mes.from_user.id)
-        if not banned:
-            user = await get_user(mes.from_user.id)
-            status = redis_utils.get(f'{user.id}')
-            await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
-                                                                f'Имя: {user.name}\n'
-                                                                f'Возраст: {user.age}\n'
-                                                                f'Пол: {'М' if user.gender else 'Ж'}\n'
-                                                                f'Локация: {user.location}\n'
-                                                                f'О себе: {user.description}',
-                                 reply_markup=menu_keyboard())
-        else:
-            await bot.send_message(mes.from_user.id, 'Вы забанены,'
-                                                     'обратитесь в службу поддержки для уточнения причин')
+        user = await get_user(mes.from_user.id)
+        status = redis_utils.get(f'{user.id}')
+        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
+                                                            f'Имя: {user.name}\n'
+                                                            f'Возраст: {user.age}\n'
+                                                            f'Пол: {'М' if user.gender else 'Ж'}\n'
+                                                            f'Локация: {user.location}\n'
+                                                            f'О себе: {user.description}',
+                             reply_markup=menu_keyboard())
