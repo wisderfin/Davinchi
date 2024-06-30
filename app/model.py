@@ -16,3 +16,5 @@ class UserModel(Base):
     rate = Column(Float, nullable=False, default=5.0)
     account = Column(String, unique=True, nullable=False)
     create_at = Column(DateTime, nullable=False, default=func.now())
+    lat = Column(Float, nullable=False, default=0.0)
+    lon = Column(Float, nullable=False, default=0.0)

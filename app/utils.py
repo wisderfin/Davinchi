@@ -3,6 +3,7 @@ from sqlalchemy import select, and_
 
 from app.base.database import get_async_session
 from app.model import UserModel
+from app.service import long_by_coordinate
 
 
 async def get_user(id: int):
@@ -14,33 +15,30 @@ async def get_user(id: int):
         return None
 
 
-async def get_users(location: str, age: int, gender: bool):
+async def get_users(location: str, age: int, gender: bool, lat: float, lon: float):
     async for session in get_async_session():
         min_age = age - 7
         max_age = age + 7
-        if gender is not None:
-            result = await session.execute(
-                select(UserModel).filter(
-                    and_(
-                        UserModel.location == location,
-                        UserModel.gender == gender,
-                        UserModel.age >= min_age,
-                        UserModel.age <= max_age
-                    )
-                )
+
+        # Получаем пользователей по базе данных с заданными условиями
+        query = select(UserModel).filter(
+            and_(
+                UserModel.location == location,
+                UserModel.gender == gender,
+                UserModel.age >= min_age,
+                UserModel.age <= max_age
             )
-        else:
-            result = await session.execute(
-                 select(UserModel).filter(
-                    and_(
-                        UserModel.location == location,
-                        UserModel.age >= min_age,
-                        UserModel.age <= max_age
-                    )
-                 )
-            )
+        )
+        result = await session.execute(query)
         users = result.scalars().all()
-        return users
+
+        # Фильтруем пользователей по расстоянию на уровне Python
+        filtered_users = [
+            user for user in users
+            if long_by_coordinate(user.lat, user.lon, lat, lon) <= 70
+        ]
+
+        return filtered_users if filtered_users is not None else None
 
 
 async def create_user(data: dict):

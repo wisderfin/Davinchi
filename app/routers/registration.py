@@ -90,7 +90,9 @@ def register_handlers(bot: AsyncTeleBot):
                 'age': int(data['age']),
                 'location': data['location'],
                 'photos': data['photo_id'],
-                'account': message.from_user.username
+                'account': message.from_user.username,
+                'lat': message.location.latitude,
+                'lon': message.location.longitude
             }
         await create_user(data=user_data)
         redis_utils.set(key=f'{user_data['id']}', value='talcking')

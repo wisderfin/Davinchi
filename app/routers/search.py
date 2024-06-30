@@ -4,7 +4,7 @@ from app import redis_utils
 from app.utils import get_user, get_users
 from random import choice
 from app.keyboard import assessment_keyboard
-
+from  app.service import long_by_coordinate
 
 from random import choice
 
@@ -16,10 +16,15 @@ def search_handlers(bot: AsyncTeleBot):
         if status == 'mute':
             redis_utils.set(key=f'{mes.from_user.id}', value='talcking')
             status = 'talcking'
-
+        if status == 'talcking':
+            rus_status = 'Общение'
+        elif status == 'teammate':
+            rus_status = 'Тимейтинг'
+        else:
+            rus_status = 'Не беспокоить'
         user = await get_user(mes.from_user.id)
         search_gender = not user.gender if status != 'teammate' else None
-        users = await get_users(location=user.location, age=user.age, gender=search_gender)
+        users = await get_users(location=user.location, age=user.age, gender=search_gender, lat=user.lat, lon=user.lon)
 
         if users:
             attempts = 0
@@ -30,12 +35,10 @@ def search_handlers(bot: AsyncTeleBot):
                 other_status = redis_utils.get(key=f'{rand_user.id}')
 
                 if rand_user.id != user.id and status == other_status:
-                    if status == 'talcking':
-                        rus_status = 'Общение'
-                    elif status == 'teammate':
-                        rus_status = 'Тимейтинг'
-                    else:
-                        rus_status = 'Не беспокоить'
+                    long = long_by_coordinate(rand_user.lat,
+                                              rand_user.lon,
+                                              user.lat,
+                                              user.lon)
                     await bot.send_photo(
                         mes.from_user.id,
                         rand_user.photos,
@@ -44,6 +47,7 @@ def search_handlers(bot: AsyncTeleBot):
                         f'Возраст: {rand_user.age}\n'
                         f'Пол: {"М" if rand_user.gender else "Ж"}\n'
                         f'Локация: {rand_user.location}\n'
+                        f'Расстояние: {long} км\n'
                         f'О себе: {rand_user.description}',
                         reply_markup=assessment_keyboard()
                     )
@@ -52,10 +56,10 @@ def search_handlers(bot: AsyncTeleBot):
 
                 attempts += 1
 
-            await bot.send_message(mes.from_user.id, f'Активных людей со статусом {status} не нашлось, '
+            await bot.send_message(mes.from_user.id, f'Активных людей со статусом {rus_status} не нашлось, '
                                                      f'попробуй сменить статус или подожди.')
         else:
-            await bot.send_message(mes.from_user.id, f'Активных людей со статусом {status} не нашлось, '
+            await bot.send_message(mes.from_user.id, f'Активных людей со статусом {rus_status} не нашлось, '
                                                      f'попробуй сменить статус или подожди.')
 
     @bot.message_handler(func=lambda mes: mes.text == '👍')
