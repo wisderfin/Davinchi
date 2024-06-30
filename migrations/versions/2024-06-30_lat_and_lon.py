@@ -30,10 +30,10 @@ def upgrade():
 
     for user in locations:
         id, location = user
-        city = location.split(", ")[-1]  # Получаем город из строки 'Область, Город'
+       
 
         try:
-            response = requests.get(f"https://nominatim.openstreetmap.org/search?q={city}&format=json")
+            response = requests.get(f"https://nominatim.openstreetmap.org/search?q={location}&format=json")
             response.raise_for_status()  # Проверяем, был ли запрос успешным
             data = response.json()
             if data:
