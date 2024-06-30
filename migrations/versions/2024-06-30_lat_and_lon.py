@@ -21,8 +21,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade():
     # Добавляем новые столбцы
-    op.add_column('users', sa.Column('lat', sa.Float(), nullable=False, server_default='0.0'))
-    op.add_column('users', sa.Column('lon', sa.Float(), nullable=False, server_default='0.0'))
+    op.add_column('users', sa.Column('lat', sa.Float(), nullable=True, server_default='0.0'))
+    op.add_column('users', sa.Column('lon', sa.Float(), nullable=True, server_default='0.0'))
 
     # Обновляем существующие записи с координатами на основе location
     connection = op.get_bind()
@@ -34,7 +34,6 @@ def upgrade():
 
         try:
             response = requests.get(f"https://nominatim.openstreetmap.org/search?q={location}&format=json")
-            response.raise_for_status()  # Проверяем, был ли запрос успешным
             data = response.json()
             if data:
                 lat = data[0]['lat']
@@ -43,7 +42,6 @@ def upgrade():
                 lat = 0.0
                 lon = 0.0  # Значения по умолчанию, если координаты не найдены
         except requests.RequestException as e:
-            print(f"Ошибка запроса для города {city}: {e}")
             lat = 0.0
             lon = 0.0  # Значения по умолчанию при ошибке запроса
 
