@@ -16,8 +16,8 @@ async def get_user(id: int):
 
 async def get_users(location: str, age: int, gender: bool):
     async for session in get_async_session():
-        min_age = age - 3
-        max_age = age + 3
+        min_age = age - 7
+        max_age = age + 7
         if gender is not None:
             result = await session.execute(
                 select(UserModel).filter(
