@@ -4,7 +4,7 @@ from app import redis_utils
 from app.utils import get_user, get_users
 from random import choice
 from app.keyboard import assessment_keyboard
-from  app.service import long_by_coordinate
+from app.service import long_by_coordinate
 
 from random import choice
 
@@ -24,7 +24,7 @@ def search_handlers(bot: AsyncTeleBot):
             rus_status = 'Не беспокоить'
         user = await get_user(mes.from_user.id)
         search_gender = not user.gender if status != 'teammate' else None
-        users = await get_users(location=user.location, age=user.age, gender=search_gender, lat=user.lat, lon=user.lon)
+        users = await get_users(age=user.age, gender=search_gender, lat=user.lat, lon=user.lon)
 
         if users:
             attempts = 0

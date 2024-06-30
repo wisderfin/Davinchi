@@ -15,7 +15,7 @@ async def get_user(id: int):
         return None
 
 
-async def get_users(location: str, age: int, gender: bool, lat: float, lon: float):
+async def get_users(age: int, gender: bool, lat: float, lon: float):
     async for session in get_async_session():
         min_age = age - 7
         max_age = age + 7
@@ -23,7 +23,6 @@ async def get_users(location: str, age: int, gender: bool, lat: float, lon: floa
         # Получаем пользователей по базе данных с заданными условиями
         query = select(UserModel).filter(
             and_(
-                UserModel.location == location,
                 UserModel.gender == gender,
                 UserModel.age >= min_age,
                 UserModel.age <= max_age
