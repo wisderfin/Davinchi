@@ -15,7 +15,13 @@ def me_handlers(bot: AsyncTeleBot):
             status = status if status is not None else 'mute'
         except Exception as _ex:
             status = 'mute'
-        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
+        if status == 'talcking':
+            rus_status = 'Общение'
+        elif status == 'teammate':
+            rus_status = 'Тимейтинг'
+        else:
+            rus_status = 'Не беспокоить'
+        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {rus_status}\n'
                                                             f'Имя: {user.name}\n'
                                                             f'Возраст: {user.age}\n'
                                                             f'Пол: {'М' if user.gender else 'Ж'}\n'
@@ -51,7 +57,13 @@ def me_handlers(bot: AsyncTeleBot):
     async def callback_query(mes):
         user = await get_user(mes.from_user.id)
         status = redis_utils.get(f'{user.id}')
-        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {status}\n'
+        if status == 'talcking':
+            rus_status = 'Общение'
+        elif status == 'teammate':
+            rus_status = 'Тимейтинг'
+        else:
+            rus_status = 'Не беспокоить'
+        await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {rus_status}\n'
                                                             f'Имя: {user.name}\n'
                                                             f'Возраст: {user.age}\n'
                                                             f'Пол: {'М' if user.gender else 'Ж'}\n'

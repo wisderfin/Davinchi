@@ -14,19 +14,31 @@ async def get_user(id: int):
         return None
 
 
-async def get_users(location: str, age: int):
+async def get_users(location: str, age: int, gender: bool):
     async for session in get_async_session():
         min_age = age - 3
         max_age = age + 3
-        result = await session.execute(
-            select(UserModel).filter(
-                and_(
-                    UserModel.location == location,
-                    UserModel.age >= min_age,
-                    UserModel.age <= max_age
+        if gender is not None:
+            result = await session.execute(
+                select(UserModel).filter(
+                    and_(
+                        UserModel.location == location,
+                        UserModel.gender == gender,
+                        UserModel.age >= min_age,
+                        UserModel.age <= max_age
+                    )
                 )
             )
-        )
+        else:
+            result = await session.execute(
+                 select(UserModel).filter(
+                    and_(
+                        UserModel.location == location,
+                        UserModel.age >= min_age,
+                        UserModel.age <= max_age
+                    )
+                 )
+            )
         users = result.scalars().all()
         return users
 
@@ -126,6 +138,7 @@ async def unset_admin(id: int):
         if user is not None:
             user.admin = False
             await session.commit()
+
 
 async def check_banned(id: int):
     async for session in get_async_session():
