@@ -1,9 +1,11 @@
 from telebot.async_telebot import AsyncTeleBot
 from telebot.asyncio_handler_backends import State, StatesGroup
+
 from app.service import get_city_name
 from app.utils import edit_name, edit_age, edit_gender, edit_location, edit_description,edit_photo, get_user
 from app import redis_utils
 from app.keyboard import menu_keyboard, assessment_keyboard
+from app.routers.search import callback_like, callback_search
 
 
 class MessageState(StatesGroup):
@@ -29,6 +31,7 @@ def message_handlers(bot: AsyncTeleBot):
         await bot.send_message(last_id, f'Сообщение от пользователя: '
                                         f'{mes.from_user.username}\n{"\t"*5}{mes.text}')
         await bot.send_message(mes.from_user.id, 'Сообщение доставлено', reply_markup=assessment_keyboard())
+        await callback_like(mes, bot)
         await bot.delete_state(mes.from_user.id, mes.chat.id)
 
 

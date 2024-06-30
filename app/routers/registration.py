@@ -20,9 +20,17 @@ class RegisterState(StatesGroup):
 def register_handlers(bot: AsyncTeleBot):
     @bot.message_handler(commands=['start'])
     async def send_welcome(message):
-
-        await bot.send_message(message.from_user.id, 'Привет, как тебя зовут?')
-        await bot.set_state(message.from_user.id, RegisterState.name, message.chat.id)
+        with open('src/obl.jpg', 'rb') as photo:
+            await bot.send_photo(message.chat.id, photo, 'Доброго времени суток!\n\n'
+                                                         '🤖 Мы команда Все Всерьёз рады приветствовать Вас в нашем'
+                                                         ' боте.\n'
+                                                         'Создавайте семьи, встречайтесь, любите .\n'
+                                                         '🔥 Подпишитесь на канал и получи буст  на знакомства .\n⤵\n'
+                                                         'Канал Все всерьез')
+        user = await get_user(message.from_user.id)
+        if user is None:
+            await bot.send_message(message.from_user.id, 'Как тебя зовут?')
+            await bot.set_state(message.from_user.id, RegisterState.name, message.chat.id)
 
     @bot.message_handler(state=RegisterState.name)
     async def get_name(message):
