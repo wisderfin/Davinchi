@@ -50,6 +50,7 @@ def remove(key: str, session=None):
     session.delete(key)
 
 
+# получения всех пользователей с определенным статусом
 @autosession
 def get_by_status(status: str, session=None):
     keys = session.keys('*')
@@ -63,10 +64,12 @@ def get_by_status(status: str, session=None):
     return result
 
 
+# добавления структурированых данных
 def set_json(key, value):
     set(key, json.dumps(value))
 
 
+# получение структурированых данных
 def get_json(key):
     data = get(key)
     return json.loads(data) if data else None

@@ -8,6 +8,7 @@ from app import redis_utils
 from app.keyboard import menu_keyboard, gender_keyboard, location_keyboard
 
 
+# группа состояний функций регистрации
 class RegisterState(StatesGroup):
     name = State()
     age = State()
@@ -17,7 +18,9 @@ class RegisterState(StatesGroup):
     location = State()
 
 
+# функция обработчиков регистрации
 def register_handlers(bot: AsyncTeleBot):
+    # обработчик команды старт(выводит приветствие  спрашивает имя)
     @bot.message_handler(commands=['start'])
     async def send_welcome(message):
         with open('src/obl.jpg', 'rb') as photo:
@@ -32,6 +35,7 @@ def register_handlers(bot: AsyncTeleBot):
             await bot.send_message(message.from_user.id, 'Как тебя зовут?')
             await bot.set_state(message.from_user.id, RegisterState.name, message.chat.id)
 
+    # обработчик состояния регистрации имени(считывает имя и запрашивает возраст)
     @bot.message_handler(state=RegisterState.name)
     async def get_name(message):
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -39,6 +43,7 @@ def register_handlers(bot: AsyncTeleBot):
         await bot.reply_to(message, 'Сколько тебе лет?')
         await bot.set_state(message.from_user.id, RegisterState.age, message.chat.id)
 
+    # обработчик состояния регистрации возраста[коректного](считывает возраст и запрашивает гендер)
     @bot.message_handler(state=RegisterState.age, is_digit=True)
     async def get_age(message):
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -47,10 +52,12 @@ def register_handlers(bot: AsyncTeleBot):
         await bot.send_message(message.chat.id, "Укажите свой пол.", reply_markup=gender_keyboard())
         await bot.set_state(message.from_user.id, RegisterState.gender, message.chat.id)
 
+    # обработчик состояния регестрации возраста[не корректного]
     @bot.message_handler(state=RegisterState.age, is_digit=False)
     async def age_incorrect(message):
         await bot.send_message(message.chat.id, 'Возраст некорректен, попробуй снова.')
 
+    # обработчик состояния регистрации гендера(считывает гендер и запрашивает описание[о себе])
     @bot.message_handler(state=RegisterState.gender)
     async def get_gender(message):
         if message.text in ['♂ М', '♀ Ж']:
@@ -62,6 +69,7 @@ def register_handlers(bot: AsyncTeleBot):
         else:
             await bot.send_message(message.chat.id, 'Неправильный выбор, укажите свой пол снова.')
 
+    # обработчик состояния регистрации описания(считывает описание и запрашивает фото)
     @bot.message_handler(state=RegisterState.description)
     async def get_description(message):
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -70,6 +78,7 @@ def register_handlers(bot: AsyncTeleBot):
                                reply_markup=telebot.types.ReplyKeyboardRemove())
         await bot.set_state(message.from_user.id, RegisterState.photo, message.chat.id)
 
+    # обработчик состояния регистрации фото(считывает фото и запрашивает логацию)
     @bot.message_handler(content_types=['photo'], state=RegisterState.photo)
     async def handle_photo(message):
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -79,6 +88,7 @@ def register_handlers(bot: AsyncTeleBot):
                                reply_markup=location_keyboard())
         await bot.set_state(message.from_user.id, RegisterState.location, message.chat.id)
 
+    # обработчик состояния регистрации локации(считывает локацтю и передаёт все собраные в состояниях данные в utils)
     @bot.message_handler(content_types=['location'], state=RegisterState.location)
     async def get_location(message):
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -106,5 +116,3 @@ def register_handlers(bot: AsyncTeleBot):
         redis_utils.set(key=f'{user_data['id']}', value='talcking')
         await bot.send_message(message.from_user.id, 'Вы успешно зарегистрированы', reply_markup=menu_keyboard())
         await bot.delete_state(message.from_user.id, message.chat.id)
-
-

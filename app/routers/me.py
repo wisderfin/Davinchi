@@ -1,12 +1,13 @@
 from telebot.async_telebot import AsyncTeleBot
-import telebot
 
 from app.keyboard import status_keyboard, menu_keyboard, edit_profile_keyboard
 from app import redis_utils
 from app.utils import get_user
 
 
+# функция с обработчиками профиля, статуса и возврата
 def me_handlers(bot: AsyncTeleBot):
+    # обработчик команды показа профиля
     @bot.message_handler(func=lambda mes: mes.text == "👤 Мой профиль")
     async def callback_query(mes):
         user = await get_user(mes.from_user.id)
@@ -30,29 +31,34 @@ def me_handlers(bot: AsyncTeleBot):
                              reply_markup=edit_profile_keyboard())
         redis_utils.set(key=f'{user.id}', value=status)
 
+    # обработчик команды смены статуса
     @bot.message_handler(func=lambda mes: mes.text == '📝 Установить статус')
     async def set_status(mes):
 
         await bot.send_message(mes.from_user.id, 'Выберите статус', reply_markup=status_keyboard())
 
+    # обработчик команды смены статуса тимейтинг
     @bot.message_handler(func=lambda mes: mes.text == '🎮 Тиммейт')
     async def set_status_teammeate(mes):
         await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск тимейтов",
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='teammate')
 
+    # обработчик команды смены общения
     @bot.message_handler(func=lambda mes: mes.text == '🗨 Собеседник')
     async def set_status_talcking(mes):
         await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск общения",
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='talcking')
 
+    # не беспокоить
     @bot.message_handler(func=lambda mes: mes.text == "🚫 Не беспокоить")
     async def set_status_mute(mes):
         await bot.send_message(mes.from_user.id, f"Ваш статус: Не беспокоить",
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='mute')
 
+    # обработчик команды возврата в меню
     @bot.message_handler(func=lambda mes: mes.text == '🔙 Назад')
     async def callback_query(mes):
         user = await get_user(mes.from_user.id)

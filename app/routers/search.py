@@ -1,14 +1,13 @@
 from telebot.async_telebot import AsyncTeleBot
-import telebot
 from app import redis_utils
 from app.utils import get_user, get_users
-from random import choice
 from app.keyboard import assessment_keyboard
 from app.service import long_by_coordinate
 
 from random import choice
 
 
+# функция-обработчик поиска
 async def callback_search(mes, bot):
     status = redis_utils.get(key=f'{mes.from_user.id}')
     if status == 'mute':
@@ -61,6 +60,7 @@ async def callback_search(mes, bot):
                                                  f'попробуй сменить статус или подожди.')
 
 
+# функция-обработчик лайка
 async def callback_like(mes, bot):
     liked_user = int(redis_utils.get(key=f'last:{mes.from_user.id}'))
     try:

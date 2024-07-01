@@ -8,11 +8,14 @@ from app.keyboard import menu_keyboard, assessment_keyboard
 from app.routers.search import callback_like, callback_search
 
 
+# группа состояний отправки сообщения peer2peer
 class MessageState(StatesGroup):
     send = State()
 
 
+# функция обработчиков peer2peer сообщений
 def message_handlers(bot: AsyncTeleBot):
+    # обработчик команды отправки сообщения
     @bot.message_handler(func=lambda mes: mes.text == '💬 Написать')
     async def callback_query(mes):
         last_id = redis_utils.get(key=f'last:{mes.from_user.id}')
@@ -20,6 +23,7 @@ def message_handlers(bot: AsyncTeleBot):
         await bot.send_message(mes.from_user.id, f'Введите сообщение для {last_user.name}')
         await bot.set_state(mes.from_user.id, MessageState.send, mes.chat.id)
 
+    # обработчик состояния отправки сообщения
     @bot.message_handler(state=MessageState.send)
     async def send_message(mes):
         if mes.text == '🔙 Назад':

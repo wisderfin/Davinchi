@@ -1,6 +1,7 @@
 import telebot
 
 
+# клавиатура гл. меню
 def menu_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     button1 = telebot.types.InlineKeyboardButton(text="👤 Мой профиль")  # +
@@ -12,6 +13,7 @@ def menu_keyboard():
     return keyboard
 
 
+# клавиатура выбора гендера
 def gender_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     button_m = telebot.types.KeyboardButton(text="♂ М")
@@ -20,6 +22,7 @@ def gender_keyboard():
     return keyboard
 
 
+# клавиатура запроса геолокации
 def location_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     button = telebot.types.KeyboardButton(text="📍 Отправить местоположение", request_location=True)
@@ -27,6 +30,7 @@ def location_keyboard():
     return keyboard
 
 
+# клавиатура выбора статуса
 def status_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     button1 = telebot.types.InlineKeyboardButton(text='🎮 Тиммейт')  # +
@@ -38,6 +42,7 @@ def status_keyboard():
     return keyboard
 
 
+# клавиатура поиска(оценки анкет)
 def assessment_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     button1 = telebot.types.InlineKeyboardButton(text='👍')  # +
@@ -50,6 +55,7 @@ def assessment_keyboard():
     return keyboard
 
 
+# клавиатура изменения данных профиля
 def edit_profile_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     button1 = telebot.types.InlineKeyboardButton(text='👤 Сменить имя')

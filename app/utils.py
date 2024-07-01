@@ -6,6 +6,7 @@ from app.model import UserModel
 from app.service import long_by_coordinate
 
 
+# получение юзера по id
 async def get_user(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -15,6 +16,7 @@ async def get_user(id: int):
         return None
 
 
+# получения всех юзеров по координатам(радиус=70км), гендеру и возрасту
 async def get_users(age: int, gender: bool, lat: float, lon: float):
     async for session in get_async_session():
         min_age = age - 7
@@ -40,6 +42,7 @@ async def get_users(age: int, gender: bool, lat: float, lon: float):
         return filtered_users if filtered_users is not None else None
 
 
+# создание пользователя
 async def create_user(data: dict):
     async for session in get_async_session():
         user = UserModel(**data)
@@ -47,6 +50,7 @@ async def create_user(data: dict):
         await session.commit()
 
 
+# изменение имени по id
 async def edit_name(id: int, new_name: str):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -56,6 +60,7 @@ async def edit_name(id: int, new_name: str):
             await session.commit()
 
 
+# изменение возраста id
 async def edit_age(id: int, new_age: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -65,6 +70,7 @@ async def edit_age(id: int, new_age: int):
             await session.commit()
 
 
+# изменение гендера по id
 async def edit_gender(id: int, new_gender: bool):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -74,15 +80,19 @@ async def edit_gender(id: int, new_gender: bool):
             await session.commit()
 
 
-async def edit_location(id: int, new_location: str):
+# изменение локации по id
+async def edit_location(id: int, new_location: str, lat: float, lon:float):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
         user = result.scalar_one_or_none()
         if user is not None:
             user.location = new_location
+            user.lat = lat
+            user.lon = lon
             await session.commit()
 
 
+# изменение фото по id
 async def edit_photo(id: int, new_photo: str):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -92,6 +102,7 @@ async def edit_photo(id: int, new_photo: str):
             await session.commit()
 
 
+# изменение описания по id
 async def edit_description(id: int, new_description: str):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -101,6 +112,7 @@ async def edit_description(id: int, new_description: str):
             await session.commit()
 
 
+# бан пользователя по id
 async def user_banned(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -110,6 +122,7 @@ async def user_banned(id: int):
             await session.commit()
 
 
+# разбан пользователя по id
 async def user_unbanned(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -119,6 +132,7 @@ async def user_unbanned(id: int):
             await session.commit()
 
 
+# назначение админа по id
 async def set_admin(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -128,6 +142,7 @@ async def set_admin(id: int):
             await session.commit()
 
 
+# разжалование админа по id
 async def unset_admin(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
@@ -137,8 +152,17 @@ async def unset_admin(id: int):
             await session.commit()
 
 
+# проверка на бан по id
 async def check_banned(id: int):
     async for session in get_async_session():
         result = await session.execute(select(UserModel).filter_by(id=id))
         user = result.scalar_one_or_none()
         return user.banned
+
+
+# получения всех id из бд
+async def get_all_chat_ids():
+    async for session in get_async_session():
+        result = await session.execute(select(UserModel.id))
+        chat_ids = result.scalars().all()
+        return chat_ids

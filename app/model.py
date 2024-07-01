@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, func, 
 from app.base.model import Base
 
 
+# модель пользователя
 class UserModel(Base):
     __tablename__ = 'users'
     id = Column(BIGINT, primary_key=True)
