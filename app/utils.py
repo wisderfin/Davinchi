@@ -23,13 +23,21 @@ async def get_users(age: int, gender: bool, lat: float, lon: float):
         max_age = age + 7
 
         # Получаем пользователей по базе данных с заданными условиями
-        query = select(UserModel).filter(
-            and_(
-                UserModel.gender == gender,
-                UserModel.age >= min_age,
-                UserModel.age <= max_age
+        if gender is not None:
+            query = select(UserModel).filter(
+                and_(
+                    UserModel.gender == gender,
+                    UserModel.age >= min_age,
+                    UserModel.age <= max_age
+                )
             )
-        )
+        else:
+            query = select(UserModel).filter(
+                and_(
+                    UserModel.age >= min_age,
+                    UserModel.age <= max_age
+                )
+            )
         result = await session.execute(query)
         users = result.scalars().all()
 
