@@ -38,7 +38,7 @@ def me_handlers(bot: AsyncTeleBot):
         await bot.send_message(mes.from_user.id, 'Выберите статус', reply_markup=status_keyboard())
 
     # обработчик команды смены статуса собачник
-    @bot.message_handler(func=lambda mes: mes.text == '🎮 Собачник')
+    @bot.message_handler(func=lambda mes: mes.text == '🐕 Собачник')
     async def set_status_teammeate(mes):
         await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск собачников",
                                reply_markup=menu_keyboard())
