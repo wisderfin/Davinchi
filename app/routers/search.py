@@ -16,7 +16,7 @@ async def callback_search(mes, bot):
     if status == 'talcking':
         rus_status = 'Общение'
     elif status == 'teammate':
-        rus_status = 'Тимейтинг'
+        rus_status = 'Собачник'
     else:
         rus_status = 'Не беспокоить'
     user = await get_user(mes.from_user.id)
@@ -57,7 +57,7 @@ async def callback_search(mes, bot):
                                                  f'попробуй сменить статус или подожди.')
     else:
         await bot.send_message(mes.from_user.id, f'Активных людей со статусом {rus_status} не нашлось, '
-                                                 f'попробуй сменить статус или подожди.')
+                                                 f'попробуй сменить статимтус или подожди.')
 
 
 # функция-обработчик лайка

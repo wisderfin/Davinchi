@@ -33,7 +33,7 @@ def location_keyboard():
 # клавиатура выбора статуса
 def status_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    button1 = telebot.types.InlineKeyboardButton(text='🎮 Тиммейт')  # +
+    button1 = telebot.types.InlineKeyboardButton(text='🐕 Собачник')  # +
     button2 = telebot.types.InlineKeyboardButton(text='🗨 Собеседник')  # +
     button3 = telebot.types.InlineKeyboardButton(text='🚫 Не беспокоить')  # +
     button4 = telebot.types.InlineKeyboardButton(text='🔙 Назад')  # +

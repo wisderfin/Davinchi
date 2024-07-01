@@ -19,7 +19,7 @@ def me_handlers(bot: AsyncTeleBot):
         if status == 'talcking':
             rus_status = 'Общение'
         elif status == 'teammate':
-            rus_status = 'Тимейтинг'
+            rus_status = 'Собачник'
         else:
             rus_status = 'Не беспокоить'
         await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {rus_status}\n'
@@ -37,10 +37,10 @@ def me_handlers(bot: AsyncTeleBot):
 
         await bot.send_message(mes.from_user.id, 'Выберите статус', reply_markup=status_keyboard())
 
-    # обработчик команды смены статуса тимейтинг
-    @bot.message_handler(func=lambda mes: mes.text == '🎮 Тиммейт')
+    # обработчик команды смены статуса собачник
+    @bot.message_handler(func=lambda mes: mes.text == '🎮 Собачник')
     async def set_status_teammeate(mes):
-        await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск тимейтов",
+        await bot.send_message(mes.from_user.id, f"Ваш статус: Поиск собачников",
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='teammate')
 
@@ -58,7 +58,7 @@ def me_handlers(bot: AsyncTeleBot):
                                reply_markup=menu_keyboard())
         redis_utils.set(key=f'{mes.from_user.id}', value='mute')
 
-    # обработчик команды возврата в меню
+    # обработчик команды возврата в менюа
     @bot.message_handler(func=lambda mes: mes.text == '🔙 Назад')
     async def callback_query(mes):
         user = await get_user(mes.from_user.id)
@@ -66,7 +66,7 @@ def me_handlers(bot: AsyncTeleBot):
         if status == 'talcking':
             rus_status = 'Общение'
         elif status == 'teammate':
-            rus_status = 'Тимейтинг'
+            rus_status = 'Собачник'
         else:
             rus_status = 'Не беспокоить'
         await bot.send_photo(mes.from_user.id, user.photos, f'Статус: {rus_status}\n'
