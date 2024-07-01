@@ -29,7 +29,8 @@ def register_handlers(bot: AsyncTeleBot):
                                                          ' боте.\n'
                                                          'Создавайте семьи, встречайтесь, любите .\n'
                                                          '🔥 Подпишитесь на канал и получи буст  на знакомства .\n⤵\n'
-                                                         'Канал Все всерьез')
+                                                         '<a href="https://t.me/znakomVvs">Канал Все всерьез</a>',
+                                 parse_mode='html')
         user = await get_user(message.from_user.id)
         if user is None:
             await bot.send_message(message.from_user.id, 'Как тебя зовут?')
